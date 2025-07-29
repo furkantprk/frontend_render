@@ -67,15 +67,15 @@ function App() {
         setNewRehinDurum(''); // Yeni aramadan önce yeni rehin durumunu temizle
 
         try {
-            // Yeni endpoint: http://localhost:8080/remote/urunler/kredi/{krediNumarasi}
-            const response = await axios.get(`http://localhost:8080/remote/urunler/kredi/${krediNumarasi}`);
+            // BACKEND URL'Sİ BURADA GÜNCELLENDİ
+            const response = await axios.get(`https://web-service1-8gnq.onrender.com/remote/urunler/kredi/${krediNumarasi}`);
 
             if (response.status === 200) {
                 setKrediBilgileri(response.data);
                 setMessage('Kredi bilgileri başarıyla getirildi.');
 
                 // Eğer daha önce bir sıra seçiliyse ve yeni gelen veride varsa onu koru
-                // Eğer "Tümünü Seç" seçiliyse de koru
+                // Eğer "Tümünü Seç" seçiliyorsa da koru
                 if (selectedSira === 'all') {
                     // "Tümünü Seç" zaten seçiliyorsa değiştirmeyin
                 } else {
@@ -168,10 +168,9 @@ function App() {
                 // Bütün sıraları güncelle
                 for (const kredi of krediBilgileri) {
                     try {
-                        // Yeni endpoint: PUT http://localhost:8080/remote/urunler/{krediNumarasi}/{sira}
-                        // PATCH yerine PUT kullanıldı ve payload DTO'ya uygun hale getirildi.
+                        // BACKEND URL'Sİ BURADA GÜNCELLENDİ
                         await axios.put(
-                            `http://localhost:8080/remote/urunler/${krediNumarasi}/${kredi.sira}`,
+                            `https://web-service1-8gnq.onrender.com/remote/urunler/${krediNumarasi}/${kredi.sira}`,
                             { rehinDurum: Number(newRehinDurum) } // rehinDurum'u sayı olarak gönder
                         );
                         updatedCount++;
@@ -188,10 +187,9 @@ function App() {
 
             } else {
                 // Tekil sırayı güncelle
-                // Yeni endpoint: PUT http://localhost:8080/remote/urunler/{krediNumarasi}/{sira}
-                // PATCH yerine PUT kullanıldı ve payload DTO'ya uygun hale getirildi.
+                // BACKEND URL'Sİ BURADA GÜNCELLENDİ
                 const response = await axios.put(
-                    `http://localhost:8080/remote/urunler/${krediNumarasi}/${selectedSira}`,
+                    `https://web-service1-8gnq.onrender.com/remote/urunler/${krediNumarasi}/${selectedSira}`,
                     { rehinDurum: Number(newRehinDurum) } // rehinDurum'u sayı olarak gönder
                 );
 
