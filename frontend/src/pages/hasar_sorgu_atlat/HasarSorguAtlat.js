@@ -32,7 +32,7 @@ function HasarSorguAtlat() {
         setMessage('');
 
         try {
-            const response = await axios.get(`https://web-service1-8gnq.onrender.com/remote/hasar/sorgula/${talepNumarasi.trim()}`);
+            const response = await axios.get(`https://web-service1-8gnq.onrender.com/remote/urunler/delete-and-reinsert-state-info/{productLineId}`);
 
             if (response.status === 200) {
                 setMessage('Kayıt başarıyla bulundu.');
