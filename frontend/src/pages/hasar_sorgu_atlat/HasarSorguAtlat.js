@@ -32,7 +32,10 @@ function HasarSorguAtlat() {
         setMessage('');
 
         try {
-            const response = await axios.get(`https://web-service1-8gnq.onrender.com/remote/urunler/delete-and-reinsert-state-info/{productLineId}`);
+            const response = await axios.delete(
+              `https://web-service1-8gnq.onrender.com/remote/urunler/delete-and-reinsert-state-info/${talepNumarasi}`
+            );
+
 
             if (response.status === 200) {
                 setMessage('Kayıt başarıyla bulundu.');
