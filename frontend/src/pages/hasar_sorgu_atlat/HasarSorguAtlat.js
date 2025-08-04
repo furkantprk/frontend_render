@@ -90,10 +90,7 @@ function HasarSorguAtlat() {
 
             if (response.status === 200) {
                 setMessage(response.data);
-                // After successful operation, you might want to clear selectedSira or refetch availableSiralar
-                setSelectedSira('');
-                // Optionally, refetch available siralar to reflect changes
-                // fetchSiralar();
+                setSelectedSira(''); // Clear selection after successful operation
             }
         } catch (error) {
             console.error('Hasar sorgulanırken bir hata oluştu:', error);
@@ -145,33 +142,35 @@ function HasarSorguAtlat() {
             {loading && <p className="loading">Sorgulanıyor...</p>}
 
             {availableSiralar.length > 0 && (
-                <div className="input-section">
-                    <label htmlFor="siraSelect">Sıra Seç:</label>
-                    <select
-                        id="siraSelect"
-                        value={selectedSira}
-                        onChange={handleSiraChange}
-                        disabled={loading}
-                    >
-                        <option value="">-- Sıra Seç --</option>
-                        <option value="all">Tümünü Seç</option>
-                        {availableSiralar.map((sira) => (
-                            <option key={sira} value={sira}>
-                                {sira}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            )}
+                <>
+                    <div className="input-section">
+                        <label htmlFor="siraSelect">Sıra Seç:</label>
+                        <select
+                            id="siraSelect"
+                            value={selectedSira}
+                            onChange={handleSiraChange}
+                            disabled={loading}
+                        >
+                            <option value="">-- Sıra Seç --</option>
+                            <option value="all">Tümünü Seç</option>
+                            {availableSiralar.map((sira) => (
+                                <option key={sira} value={sira}>
+                                    {sira}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-            <div className="button-section">
-                <button
-                    onClick={handleSorgula}
-                    disabled={loading || !krediNumarasi.trim() || (availableSiralar.length > 0 && selectedSira === '')}
-                >
-                    Hasar Sorgu Atlat
-                </button>
-            </div>
+                    <div className="button-section">
+                        <button
+                            onClick={handleSorgula}
+                            disabled={loading || !krediNumarasi.trim() || (availableSiralar.length > 0 && selectedSira === '')}
+                        >
+                            Hasar Sorgu Atlat
+                        </button>
+                    </div>
+                </>
+            )}
         </div>
     );
 }
