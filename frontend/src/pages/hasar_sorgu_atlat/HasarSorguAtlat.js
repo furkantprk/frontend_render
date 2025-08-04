@@ -18,48 +18,11 @@ function HasarSorguAtlat() {
         return () => clearTimeout(timer);
     }, []);
 
-    // Kredi numarası değiştiğinde sıra numaralarını getir
-    useEffect(() => {
-        const fetchSiralar = async () => {
-            if (krediNumarasi.trim()) {
-                setLoading(true);
-                setMessage('');
-                try {
-                    const response = await axios.get(
-                        `https://web-service1-8gnq.onrender.com/remote/urunler/siralar/${krediNumarasi}`
-                    );
-                    if (response.status === 200) {
-                        setAvailableSiralar(response.data);
-                        setSelectedSira(''); // Yeni kredi numarası girildiğinde seçimi sıfırla
-                    } else {
-                        setAvailableSiralar([]);
-                        setMessage('Bu kredi numarasına ait sıra bulunamadı.');
-                    }
-                } catch (error) {
-                    console.error('Sıra numaraları getirilirken hata oluştu:', error);
-                    setAvailableSiralar([]);
-                    if (error.response && error.response.status === 404) {
-                        setMessage('Bu kredi numarasına ait sıra bulunamadı.');
-                    } else {
-                        setMessage('Sıra numaraları getirilirken bir hata oluştu.');
-                    }
-                } finally {
-                    setLoading(false);
-                }
-            } else {
-                setAvailableSiralar([]);
-                setSelectedSira('');
-            }
-        };
-        const debounceTimer = setTimeout(() => {
-            fetchSiralar();
-        }, 500); // Kullanıcı yazmayı bitirdikten sonra 500ms bekle
-        return () => clearTimeout(debounceTimer);
-    }, [krediNumarasi]);
-
     const handleKrediNumarasiChange = (event) => {
         setKrediNumarasi(event.target.value);
         setMessage('');
+        setAvailableSiralar([]); // Kredi numarası değiştiğinde sıraları temizle
+        setSelectedSira('');    // Seçili sırayı temizle
     };
 
     const handleSiraChange = (event) => {
@@ -67,12 +30,48 @@ function HasarSorguAtlat() {
         setMessage('');
     };
 
+    const fetchSiralar = async () => {
+        if (!krediNumarasi.trim()) {
+            setMessage('Lütfen bir kredi numarası giriniz.');
+            return;
+        }
+
+        setLoading(true);
+        setMessage('');
+        setAvailableSiralar([]);
+        setSelectedSira('');
+
+        try {
+            const response = await axios.get(
+                `https://web-service1-8gnq.onrender.com/remote/urunler/siralar/${krediNumarasi}`
+            );
+            if (response.status === 200 && response.data.length > 0) {
+                setAvailableSiralar(response.data);
+                setMessage('Sıra bilgileri başarıyla getirildi.');
+            } else if (response.status === 200 && response.data.length === 0) {
+                setMessage('Bu kredi numarasına ait sıra bulunamadı.');
+            } else {
+                setMessage('Sıra numaraları getirilirken bir sorun oluştu.');
+            }
+        } catch (error) {
+            console.error('Sıra numaraları getirilirken hata oluştu:', error);
+            setAvailableSiralar([]);
+            if (error.response && error.response.status === 404) {
+                setMessage('Bu kredi numarasına ait sıra bulunamadı.');
+            } else {
+                setMessage('Sıra numaraları getirilirken bir hata oluştu.');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleSorgula = async () => {
         if (!krediNumarasi.trim()) {
             setMessage('Lütfen bir kredi numarası giriniz.');
             return;
         }
-        if (selectedSira === '' && availableSiralar.length > 0) {
+        if (availableSiralar.length > 0 && selectedSira === '') {
             setMessage('Lütfen bir sıra numarası seçiniz veya "Tümünü Seç"i işaretleyiniz.');
             return;
         }
@@ -82,19 +81,19 @@ function HasarSorguAtlat() {
 
         let url = `https://web-service1-8gnq.onrender.com/remote/urunler/delete-and-reinsert-state-info-by-kredi?krediNumarasi=${krediNumarasi}`;
 
-        // Eğer belirli bir sıra seçildiyse veya 'all' seçeneği seçilmediyse
         if (selectedSira !== '' && selectedSira !== 'all') {
             url += `&sira=${selectedSira}`;
         }
-        // Eğer 'all' seçeneği seçildiyse veya hiç sıra numarası yoksa ve kullanıcı devam etmek istiyorsa
-        // (Bu durumda 'sira' parametresi gönderilmeyecek, backend tümünü işleyecek)
-
 
         try {
             const response = await axios.delete(url);
 
             if (response.status === 200) {
-                setMessage(response.data); // Backend'den gelen mesajı direkt göster
+                setMessage(response.data);
+                // After successful operation, you might want to clear selectedSira or refetch availableSiralar
+                setSelectedSira('');
+                // Optionally, refetch available siralar to reflect changes
+                // fetchSiralar();
             }
         } catch (error) {
             console.error('Hasar sorgulanırken bir hata oluştu:', error);
@@ -132,7 +131,18 @@ function HasarSorguAtlat() {
                     placeholder="Kredi Numarasını Girin"
                     disabled={loading}
                 />
+                <button onClick={fetchSiralar} disabled={loading || !krediNumarasi.trim()}>
+                    Bilgileri Getir
+                </button>
             </div>
+
+            {message && (
+                <p className={`message ${message.includes('başarıyla') ? 'success' : 'error'}`}>
+                    {message}
+                </p>
+            )}
+
+            {loading && <p className="loading">Sorgulanıyor...</p>}
 
             {availableSiralar.length > 0 && (
                 <div className="input-section">
@@ -144,7 +154,7 @@ function HasarSorguAtlat() {
                         disabled={loading}
                     >
                         <option value="">-- Sıra Seç --</option>
-                        <option value="all">Tümünü Seç</option> {/* Tümünü seç seçeneği */}
+                        <option value="all">Tümünü Seç</option>
                         {availableSiralar.map((sira) => (
                             <option key={sira} value={sira}>
                                 {sira}
@@ -162,14 +172,6 @@ function HasarSorguAtlat() {
                     Hasar Sorgu Atlat
                 </button>
             </div>
-
-            {message && (
-                <p className={`message ${message.includes('başarıyla') ? 'success' : 'error'}`}>
-                    {message}
-                </p>
-            )}
-
-            {loading && <p className="loading">Sorgulanıyor...</p>}
         </div>
     );
 }
