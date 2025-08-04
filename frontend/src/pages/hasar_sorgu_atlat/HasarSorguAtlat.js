@@ -9,7 +9,6 @@ function HasarSorguAtlat() {
     const [loading, setLoading] = useState(false);
     const [isPageLoaded, setIsPageLoaded] = useState(false);
 
-    // Page load fade-in effect
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsPageLoaded(true);
@@ -32,33 +31,28 @@ function HasarSorguAtlat() {
         setMessage('');
 
         try {
+            // GÜNCELLENMİŞ AXIOS İSTEĞİ: Yalnızca kredi numarası ile yeni endpoint'i kullanıyor
             const response = await axios.delete(
-              `https://web-service1-8gnq.onrender.com/remote/urunler/delete-and-reinsert-state-info/${talepNumarasi}`
+                `https://web-service1-8gnq.onrender.com/remote/urunler/delete-and-reinsert-state-info-by-kredi/${talepNumarasi}`
             );
 
-
             if (response.status === 200) {
-                setMessage('Kayıt başarıyla bulundu.');
-            } else if (response.status === 204) {
-                setMessage('Girilen talep numarasına ait kayıt bulunamadı.');
+                setMessage('Kayıt başarıyla işlendi ve güncellendi.');
             }
         } catch (error) {
             console.error('Hasar sorgulanırken bir hata oluştu:', error);
             if (error.response) {
-                // Server responded with a status other than 2xx range
                 if (error.response.status === 404) {
                     setMessage('Girilen talep numarasına ait kayıt bulunamadı.');
-                } else if (error.response.status === 204) {
-                    setMessage('Girilen talep numarasına ait kayıt bulunamadı.');
+                } else if (error.response.status === 500) {
+                    setMessage(`Sunucu hatası (${error.response.status}): ${error.response.data || 'İşlem tamamlanamadı. Lütfen daha sonra tekrar deneyin.'}`);
                 } else {
-                    setMessage(`Sunucu hatası (${error.response.status}): İşlem tamamlanamadı. Lütfen daha sonra tekrar deneyin.`);
+                    setMessage(`Bir hata oluştu (${error.response.status}): ${error.response.data || 'İşlem tamamlanamadı. Lütfen daha sonra tekrar deneyin.'}`);
                 }
             } else if (error.request) {
-                // Request was made but no response was received
                 setMessage('Ağ hatası: Sunucuya ulaşılamadı. Lütfen internet bağlantınızı kontrol edin veya daha sonra tekrar deneyin.');
             } else {
-                // Something happened in setting up the request that triggered an Error
-                setMessage('Bir hata oluştu: İstek gönderilemedi. Lütfen teknik destek ile iletişime geçin.');
+                    setMessage('Bir hata oluştu: İstek gönderilemedi. Lütfen teknik destek ile iletişime geçin.');
             }
         } finally {
             setLoading(false);
@@ -72,13 +66,13 @@ function HasarSorguAtlat() {
             </h1>
 
             <div className="input-section">
-                <label htmlFor="talepNumarasiInput">Talep Numarası:</label>
+                <label htmlFor="talepNumarasiInput">Talep Numarası (Kredi Numarası):</label>
                 <input
                     type="text"
                     id="talepNumarasiInput"
                     value={talepNumarasi}
                     onChange={handleTalepNumarasiChange}
-                    placeholder="Talep Numarasını Girin"
+                    placeholder="Kredi Numarasını Girin"
                     disabled={loading}
                 />
             </div>
@@ -90,7 +84,7 @@ function HasarSorguAtlat() {
             </div>
 
             {message && (
-                <p className={`message ${message.includes('başarıyla bulundu') ? 'success' : 'error'}`}>
+                <p className={`message ${message.includes('başarıyla') ? 'success' : 'error'}`}>
                     {message}
                 </p>
             )}
