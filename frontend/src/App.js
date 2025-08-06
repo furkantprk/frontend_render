@@ -1,11 +1,10 @@
-// src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import HomePage from './pages/home/HomePage';
-import RehinDurumYonetimi from './pages/rehin_durum_yonetimi/RehinDurumYonetimi';
-import HasarSorguAtlat from './pages/hasar_sorgu_atlat/HasarSorguAtlat';
-import './App.css';
-import { FaHome, FaCarCrash, FaFileAlt } from 'react-icons/fa'; // FaFileAlt ikonunu import ettik
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom"
+import HomePage from "./pages/home/HomePage"
+import RehinDurumYonetimi from "./pages/rehin_durum_yonetimi/RehinDurumYonetimi"
+import HasarSorguAtlat from "./pages/hasar_sorgu_atlat/HasarSorguAtlat"
+import EvrakDurumGuncelle from "./pages/evrak_durum_guncelle/EvrakDurumGuncelle" // Yeni sayfa import edildi
+import "./App.css"
+import { FaHome, FaCarCrash, FaFileAlt, FaClipboardList } from "react-icons/fa" // Yeni ikon import edildi
 
 function App() {
   return (
@@ -20,7 +19,7 @@ function App() {
             </li>
             <li>
               <Link to="/rehin-yonetimi">
-                <FaFileAlt size={20} /> Rehin Durum Yönetimi {/* İkon eklendi */}
+                <FaFileAlt size={20} /> Rehin Durum Yönetimi
               </Link>
             </li>
             <li>
@@ -28,19 +27,26 @@ function App() {
                 <FaCarCrash size={20} /> Hasar Sorgu Atlat
               </Link>
             </li>
+            <li>
+              <Link to="/evrak-durum-guncelle">
+                {" "}
+                {/* Yeni link eklendi */}
+                <FaClipboardList size={20} /> Evrak Durum Güncelle
+              </Link>
+            </li>
           </ul>
         </nav>
-
         <div className="page-content">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/rehin-yonetimi" element={<RehinDurumYonetimi />} />
             <Route path="/hasar-sorgu-atlat" element={<HasarSorguAtlat />} />
+            <Route path="/evrak-durum-guncelle" element={<EvrakDurumGuncelle />} /> {/* Yeni route eklendi */}
           </Routes>
         </div>
       </div>
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App
