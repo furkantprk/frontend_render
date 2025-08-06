@@ -1,3 +1,4 @@
+// src/pages/evrak_durum_guncelle/EvrakDurumGuncelle.jsx
 "use client"
 
 import { useState, useEffect } from "react"
@@ -61,7 +62,6 @@ function EvrakDurumGuncelle() {
     setNewDocumentStatus("")
 
     try {
-      // 🔹 DEĞİŞİKLİK: Controller'daki '/remote/kootoevrakdurum/{krediNumarasi}' endpoint'ine uygun hale getirildi.
       const response = await axios.get(`https://web-service1-8gnq.onrender.com/remote/kootoevrakdurum/${talepNumarasi}`)
 
       if (response.status === 200) {
@@ -71,7 +71,7 @@ function EvrakDurumGuncelle() {
           const formattedData = filteredData.map((doc) => ({
             ...doc,
             id: doc.evrakKodu,
-            evrakDurum: doc.evrakDurum,
+            durum: doc.durum, // 'durum' alanını kullanmak için düzeltildi
           }))
 
           setDocumentStatusList(formattedData)
@@ -79,7 +79,7 @@ function EvrakDurumGuncelle() {
 
           if (formattedData.length > 0) {
             setSelectedDocument(formattedData[0])
-            setNewDocumentStatus(String(formattedData[0].evrakDurum) || "")
+            setNewDocumentStatus(String(formattedData[0].durum) || "") // 'durum' alanını kullanmak için düzeltildi
           }
         } else {
           setMessage("Bu talep numarasına ait evrak bulunamadı.")
@@ -108,7 +108,7 @@ function EvrakDurumGuncelle() {
     } else {
       const doc = documentStatusList.find((d) => String(d.id) === selectedId)
       setSelectedDocument(doc)
-      setNewDocumentStatus(doc ? String(doc.evrakDurum) || "" : "")
+      setNewDocumentStatus(doc ? String(doc.durum) || "" : "") // 'durum' alanını kullanmak için düzeltildi
     }
   }
 
@@ -135,11 +135,10 @@ function EvrakDurumGuncelle() {
       if (selectedDocument.id === "all") {
         for (const doc of documentStatusList) {
           try {
-            // 🔹 DEĞİŞİKLİK: Controller'daki '/remote/kootoevrakdurum/update/{krediNumarasi}/{evrakKodu}' endpoint'ine uygun hale getirildi.
             await axios.put(
               `https://web-service1-8gnq.onrender.com/remote/kootoevrakdurum/update/${talepNumarasi}/${doc.id}`,
               {
-                evrakDurum: Number(newDocumentStatus),
+                durum: Number(newDocumentStatus), // 'durum' alanını kullanmak için düzeltildi
               },
             )
             updatedCount++
@@ -156,10 +155,9 @@ function EvrakDurumGuncelle() {
           setMessage(`Evrak durumu güncellenirken bazı hatalar oluştu. ${updatedCount} kayıt güncellendi.`)
         }
       } else {
-        // 🔹 DEĞİŞİKLİK: Controller'daki '/remote/kootoevrakdurum/update/{krediNumarasi}/{evrakKodu}' endpoint'ine uygun hale getirildi.
         const response = await axios.put(
           `https://web-service1-8gnq.onrender.com/remote/kootoevrakdurum/update/${talepNumarasi}/${selectedDocument.id}`,
-          { evrakDurum: Number(newDocumentStatus) },
+          { durum: Number(newDocumentStatus) }, // 'durum' alanını kullanmak için düzeltildi
         )
         if (response.status === 200) {
           setMessage(
@@ -224,7 +222,7 @@ function EvrakDurumGuncelle() {
               {documentStatusList.length > 1 && <option value="all">Tümünü Seç</option>}
               {documentStatusList.map((doc) => (
                 <option key={doc.id} value={doc.id}>
-                  {doc.id} (Mevcut Durum: {getDocumentStatusLabel(doc.evrakDurum)})
+                  {doc.id} (Mevcut Durum: {getDocumentStatusLabel(doc.durum)}) {/* 'durum' alanını kullanmak için düzeltildi */}
                 </option>
               ))}
             </select>
@@ -264,7 +262,7 @@ function EvrakDurumGuncelle() {
                   <strong>Evrak ID:</strong> {doc.id}
                 </p>
                 <p>
-                  <strong>Mevcut Durum:</strong> {getDocumentStatusLabel(doc.evrakDurum)}
+                  <strong>Mevcut Durum:</strong> {getDocumentStatusLabel(doc.durum)} {/* 'durum' alanını kullanmak için düzeltildi */}
                 </p>
               </div>
             ))}
@@ -275,4 +273,4 @@ function EvrakDurumGuncelle() {
   )
 }
 
-export default EvrakDurumGuncelle
+export default EvrakDurumGuncelle;
