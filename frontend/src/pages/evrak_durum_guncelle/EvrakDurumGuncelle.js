@@ -1,6 +1,4 @@
-// src/pages/evrak_durum_guncelle/EvrakDurumGuncelle.jsx
 "use client"
-
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { FaClipboardList } from "react-icons/fa"
@@ -71,7 +69,7 @@ function EvrakDurumGuncelle() {
           const formattedData = filteredData.map((doc) => ({
             ...doc,
             id: doc.evrakKodu,
-            durum: doc.durum, // 'durum' alanını kullanmak için düzeltildi
+            durum: doc.durum,
           }))
 
           setDocumentStatusList(formattedData)
@@ -79,7 +77,7 @@ function EvrakDurumGuncelle() {
 
           if (formattedData.length > 0) {
             setSelectedDocument(formattedData[0])
-            setNewDocumentStatus(String(formattedData[0].durum) || "") // 'durum' alanını kullanmak için düzeltildi
+            setNewDocumentStatus(String(formattedData[0].durum) || "")
           }
         } else {
           setMessage("Bu talep numarasına ait evrak bulunamadı.")
@@ -104,11 +102,11 @@ function EvrakDurumGuncelle() {
     const selectedId = event.target.value
     if (selectedId === "all") {
       setSelectedDocument({ id: "all" })
-      setNewDocumentStatus("")
+      setNewDocumentStatus("") // 'Tümünü Seç' seçildiğinde durumu temizle
     } else {
       const doc = documentStatusList.find((d) => String(d.id) === selectedId)
       setSelectedDocument(doc)
-      setNewDocumentStatus(doc ? String(doc.durum) || "" : "") // 'durum' alanını kullanmak için düzeltildi
+      setNewDocumentStatus(doc ? String(doc.durum) || "" : "")
     }
   }
 
@@ -121,9 +119,13 @@ function EvrakDurumGuncelle() {
       setMessage("Lütfen talep numarası ve güncellenecek evrak seçin.")
       return
     }
-    if (!newDocumentStatus) {
-      setMessage("Lütfen yeni evrak durumunu seçin.")
-      return
+    if (!newDocumentStatus && selectedDocument.id !== "all") {
+        setMessage("Lütfen yeni evrak durumunu seçin.");
+        return;
+    }
+    if (!newDocumentStatus && selectedDocument.id === "all") {
+        setMessage("Lütfen tüm evraklar için yeni durumu seçin.");
+        return;
     }
 
     setLoading(true)
@@ -133,12 +135,13 @@ function EvrakDurumGuncelle() {
 
     try {
       if (selectedDocument.id === "all") {
+        // Tüm evraklar için döngü
         for (const doc of documentStatusList) {
           try {
             await axios.put(
               `https://web-service1-8gnq.onrender.com/remote/kootoevrakdurum/update/${talepNumarasi}/${doc.id}`,
               {
-                durum: Number(newDocumentStatus), // 'durum' alanını kullanmak için düzeltildi
+                durum: Number(newDocumentStatus),
               },
             )
             updatedCount++
@@ -155,9 +158,10 @@ function EvrakDurumGuncelle() {
           setMessage(`Evrak durumu güncellenirken bazı hatalar oluştu. ${updatedCount} kayıt güncellendi.`)
         }
       } else {
+        // Tekil evrak güncelleme
         const response = await axios.put(
           `https://web-service1-8gnq.onrender.com/remote/kootoevrakdurum/update/${talepNumarasi}/${selectedDocument.id}`,
-          { durum: Number(newDocumentStatus) }, // 'durum' alanını kullanmak için düzeltildi
+          { durum: Number(newDocumentStatus) },
         )
         if (response.status === 200) {
           setMessage(
@@ -222,7 +226,7 @@ function EvrakDurumGuncelle() {
               {documentStatusList.length > 1 && <option value="all">Tümünü Seç</option>}
               {documentStatusList.map((doc) => (
                 <option key={doc.id} value={doc.id}>
-                  {doc.id} (Mevcut Durum: {getDocumentStatusLabel(doc.durum)}) {/* 'durum' alanını kullanmak için düzeltildi */}
+                  {doc.id} (Mevcut Durum: {getDocumentStatusLabel(doc.durum)})
                 </option>
               ))}
             </select>
@@ -235,7 +239,7 @@ function EvrakDurumGuncelle() {
                 id="newDocumentStatusSelect"
                 value={newDocumentStatus}
                 onChange={handleNewDocumentStatusChange}
-                disabled={loading || (selectedDocument && selectedDocument.id === "all" && !newDocumentStatus)}
+                disabled={loading || !selectedDocument} // Sadece 'selectedDocument' boşsa deaktif et
               >
                 <option value="">Seçiniz</option>
                 {documentStatusOptions.map((option) => (
@@ -262,7 +266,7 @@ function EvrakDurumGuncelle() {
                   <strong>Evrak ID:</strong> {doc.id}
                 </p>
                 <p>
-                  <strong>Mevcut Durum:</strong> {getDocumentStatusLabel(doc.durum)} {/* 'durum' alanını kullanmak için düzeltildi */}
+                  <strong>Mevcut Durum:</strong> {getDocumentStatusLabel(doc.durum)}
                 </p>
               </div>
             ))}
