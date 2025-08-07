@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaCalendarAlt } from "react-icons/fa";
-import "./KapananGun.css";
+import "./GunKapama.css";
 
 function GunKapama() {
   const [selectedDate, setSelectedDate] = useState("");

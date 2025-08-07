@@ -4,7 +4,7 @@ import HomePage from "./pages/home/HomePage"
 import RehinDurumYonetimi from "./pages/rehin_durum_yonetimi/RehinDurumYonetimi"
 import HasarSorguAtlat from "./pages/hasar_sorgu_atlat/HasarSorguAtlat"
 import EvrakDurumGuncelle from "./pages/evrak_durum_guncelle/EvrakDurumGuncelle"
-import GunKapama from "./pages/kapanan_gun/GunKapama"
+import GunKapama from "./pages/gun_kapama/GunKapama"
 import "./App.css"
 import { FaHome, FaCarCrash, FaFileAlt, FaClipboardList, FaCalendarAlt } from "react-icons/fa"
 
