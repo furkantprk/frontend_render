@@ -1,11 +1,12 @@
+// dosya: App.jsx
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom"
 import HomePage from "./pages/home/HomePage"
 import RehinDurumYonetimi from "./pages/rehin_durum_yonetimi/RehinDurumYonetimi"
 import HasarSorguAtlat from "./pages/hasar_sorgu_atlat/HasarSorguAtlat"
 import EvrakDurumGuncelle from "./pages/evrak_durum_guncelle/EvrakDurumGuncelle"
-import KapananGun from "./pages/kapanan_gun/KapananGun" // Yeni sayfa import edildi
+import GunKapama from "./pages/kapanan_gun/GunKapama"
 import "./App.css"
-import { FaHome, FaCarCrash, FaFileAlt, FaClipboardList, FaCalendarAlt } from "react-icons/fa" // Yeni ikon import edildi
+import { FaHome, FaCarCrash, FaFileAlt, FaClipboardList, FaCalendarAlt } from "react-icons/fa"
 
 function App() {
   return (
@@ -35,7 +36,7 @@ function App() {
             </li>
             <li>
               <Link to="/kapanan-gun">
-                <FaCalendarAlt size={20} /> Kapanan Gün {/* Yeni link eklendi */}
+                <FaCalendarAlt size={20} /> Gün Kapama
               </Link>
             </li>
           </ul>
@@ -46,7 +47,7 @@ function App() {
             <Route path="/rehin-yonetimi" element={<RehinDurumYonetimi />} />
             <Route path="/hasar-sorgu-atlat" element={<HasarSorguAtlat />} />
             <Route path="/evrak-durum-guncelle" element={<EvrakDurumGuncelle />} />
-            <Route path="/kapanan-gun" element={<KapananGun />} /> {/* Yeni route eklendi */}
+            <Route path="/kapanan-gun" element={<GunKapama />} />
           </Routes>
         </div>
       </div>

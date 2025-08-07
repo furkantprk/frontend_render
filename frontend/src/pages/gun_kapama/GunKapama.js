@@ -1,3 +1,4 @@
+// dosya: GunKapama.jsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -5,7 +6,7 @@ import axios from "axios";
 import { FaCalendarAlt } from "react-icons/fa";
 import "./KapananGun.css";
 
-function KapananGun() {
+function GunKapama() {
   const [selectedDate, setSelectedDate] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +21,7 @@ function KapananGun() {
 
   const handleDateChange = (event) => {
     const inputValue = event.target.value;
-    setMessage(""); // Önceki mesajları temizle
+    setMessage("");
 
     const dateParts = inputValue.split("-");
     if (dateParts.length === 3 && dateParts[0].length > 4) {
@@ -40,15 +41,13 @@ function KapananGun() {
     setLoading(true);
     setMessage("");
 
-    // ✅ YENİ ENDPOINT'E GÖRE GÜNCELLENMİŞ KISIM
-    // DELETE isteği atılıyor ve tarih, URL'in bir parçası olarak gönderiliyor.
+    const baseUrl = "https://web-service1-8gnq.onrender.com";
+
     try {
-      // Arkadaşının API'sinin canlı URL'ini ve yeni DELETE endpoint'ini kullanıyoruz.
       const response = await axios.delete(
-        `https://web-service1-8gnq.onrender.com/remote/kogunkapama/process/${selectedDate}`
+        `${baseUrl}/remote/kogunkapama/process/${selectedDate}`
       );
 
-      // DELETE isteği başarılıysa status kodu 200 döner.
       if (response.status === 200) {
         setMessage(
           `${selectedDate} tarihi için günlük kapanış işlemi başarıyla tetiklendi.`
@@ -75,7 +74,7 @@ function KapananGun() {
   return (
     <div className={`kapanan-gun-container ${isPageLoaded ? "fade-in" : ""}`}>
       <h1>
-        <FaCalendarAlt className="title-icon" /> Günlük Kapanış
+        <FaCalendarAlt className="title-icon" /> Gün Kapama
       </h1>
       <div className="input-section">
         <label htmlFor="dateInput">Lütfen işlem yapılacak tarihi seçiniz:</label>
@@ -93,7 +92,7 @@ function KapananGun() {
           onClick={handleSetClosedDay}
           disabled={loading || !selectedDate}
         >
-          Günlük Kapanış İşlemini Başlat
+          Gün Kapama'yı Başlat
         </button>
       </div>
       {message && (
@@ -106,4 +105,4 @@ function KapananGun() {
   );
 }
 
-export default KapananGun;
+export default GunKapama;
