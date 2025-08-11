@@ -1,4 +1,3 @@
-// src/pages/rehin_durum_yonetimi/RehinDurumYonetimi.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaFileAlt } from 'react-icons/fa'; // Kağıt benzeri bir ikon ekledik
@@ -202,19 +201,23 @@ function RehinDurumYonetimi() {
                 <FaFileAlt className="title-icon" /> Rehin Durum Yönetimi
             </h1>
 
-            <div className="input-section">
-                <label htmlFor="krediNumarasiInput">Kredi Numarası:</label>
-                <input
-                    type="text"
-                    id="krediNumarasiInput"
-                    value={krediNumarasi}
-                    onChange={handleKrediNumarasiChange}
-                    placeholder="Kredi Numarasını Girin"
-                    disabled={loading}
-                />
-                <button onClick={fetchKrediBilgileri} disabled={loading || !krediNumarasi}>
-                    Kredi Bilgilerini Getir
-                </button>
+            <div className="input-group-container">
+                <div className="input-section">
+                    <label htmlFor="krediNumarasiInput">Kredi Numarası:</label>
+                    <input
+                        type="text"
+                        id="krediNumarasiInput"
+                        value={krediNumarasi}
+                        onChange={handleKrediNumarasiChange}
+                        placeholder="Kredi Numarasını Girin"
+                        disabled={loading}
+                    />
+                </div>
+                <div className="input-section button-container">
+                    <button onClick={fetchKrediBilgileri} disabled={loading || !krediNumarasi}>
+                        Rehin Bilgilerini Getir
+                    </button>
+                </div>
             </div>
 
             {message && (

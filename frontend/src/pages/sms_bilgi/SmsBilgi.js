@@ -166,7 +166,7 @@ function SmsBilgi() {
                 <tr key={index} className={getRowClass(sms.kaynakTablo)}>
                   <td>{sms.phoneNumber}</td>
                   <td className="message-body-cell">{sms.messageBody}</td>
-                  <td>{sms.insertDate}</td>
+                  <td>{new Date(sms.insertDate).toLocaleDateString("tr-TR")}</td>
                   <td>{sms.smsKod}</td>
                   <td>{sms.gonderilenProg}</td>
                   <td>{sms.kaynakTablo}</td>
@@ -175,9 +175,6 @@ function SmsBilgi() {
             </tbody>
           </table>
         </div>
-      )}
-      {!loading && !message && smsList.length === 0 && (
-        <p className="no-data-message">Sorgu sonucuna göre SMS kaydı bulunamadı.</p>
       )}
     </div>
   )

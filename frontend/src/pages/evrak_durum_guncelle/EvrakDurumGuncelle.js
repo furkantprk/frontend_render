@@ -12,7 +12,6 @@ function EvrakDurumGuncelle() {
   const [selectedDocument, setSelectedDocument] = useState(null)
   const [newDocumentStatus, setNewDocumentStatus] = useState("")
   const [isPageLoaded, setIsPageLoaded] = useState(false)
-  const [allDocuments, setAllDocuments] = useState([])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -74,11 +73,9 @@ function EvrakDurumGuncelle() {
 
           setDocumentStatusList(formattedData)
           setMessage("Evrak bilgileri başarıyla getirildi.")
+          setSelectedDocument(null)
+          setNewDocumentStatus("")
 
-          if (formattedData.length > 0) {
-            setSelectedDocument(formattedData[0])
-            setNewDocumentStatus(String(formattedData[0].durum) || "")
-          }
         } else {
           setMessage("Bu talep numarasına ait evrak bulunamadı.")
         }
@@ -102,7 +99,7 @@ function EvrakDurumGuncelle() {
     const selectedId = event.target.value
     if (selectedId === "all") {
       setSelectedDocument({ id: "all" })
-      setNewDocumentStatus("") // 'Tümünü Seç' seçildiğinde durumu temizle
+      setNewDocumentStatus("")
     } else {
       const doc = documentStatusList.find((d) => String(d.id) === selectedId)
       setSelectedDocument(doc)
@@ -135,7 +132,6 @@ function EvrakDurumGuncelle() {
 
     try {
       if (selectedDocument.id === "all") {
-        // Tüm evraklar için döngü
         for (const doc of documentStatusList) {
           try {
             await axios.put(
@@ -158,7 +154,6 @@ function EvrakDurumGuncelle() {
           setMessage(`Evrak durumu güncellenirken bazı hatalar oluştu. ${updatedCount} kayıt güncellendi.`)
         }
       } else {
-        // Tekil evrak güncelleme
         const response = await axios.put(
           `https://web-service1-8gnq.onrender.com/remote/kootoevrakdurum/update/${talepNumarasi}/${selectedDocument.id}`,
           { durum: Number(newDocumentStatus) },
@@ -202,6 +197,9 @@ function EvrakDurumGuncelle() {
           placeholder="Talep Numarasını Girin"
           disabled={loading}
         />
+      </div>
+
+      <div className="button-section">
         <button onClick={fetchDocumentStatus} disabled={loading || !talepNumarasi.trim()}>
           Evrak Durum Listele
         </button>
@@ -222,7 +220,7 @@ function EvrakDurumGuncelle() {
               onChange={handleDocumentSelectChange}
               disabled={loading}
             >
-              <option value="">Bir Evrak Seçin</option>
+              <option value="">Bir evrak seçiniz</option>
               {documentStatusList.length > 1 && <option value="all">Tümünü Seç</option>}
               {documentStatusList.map((doc) => (
                 <option key={doc.id} value={doc.id}>
@@ -239,7 +237,7 @@ function EvrakDurumGuncelle() {
                 id="newDocumentStatusSelect"
                 value={newDocumentStatus}
                 onChange={handleNewDocumentStatusChange}
-                disabled={loading || !selectedDocument} // Sadece 'selectedDocument' boşsa deaktif et
+                disabled={loading || !selectedDocument}
               >
                 <option value="">Seçiniz</option>
                 {documentStatusOptions.map((option) => (

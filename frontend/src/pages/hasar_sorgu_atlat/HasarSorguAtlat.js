@@ -5,8 +5,8 @@ import './HasarSorguAtlat.css';
 
 function HasarSorguAtlat() {
     const [krediNumarasi, setKrediNumarasi] = useState('');
-    const [availableSiralar, setAvailableSiralar] = useState([]); // Sıra numaraları için state
-    const [selectedSira, setSelectedSira] = useState(''); // Seçilen sıra numarası için state
+    const [availableSiralar, setAvailableSiralar] = useState([]);
+    const [selectedSira, setSelectedSira] = useState('');
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [isPageLoaded, setIsPageLoaded] = useState(false);
@@ -21,8 +21,8 @@ function HasarSorguAtlat() {
     const handleKrediNumarasiChange = (event) => {
         setKrediNumarasi(event.target.value);
         setMessage('');
-        setAvailableSiralar([]); // Kredi numarası değiştiğinde sıraları temizle
-        setSelectedSira('');    // Seçili sırayı temizle
+        setAvailableSiralar([]);
+        setSelectedSira('');
     };
 
     const handleSiraChange = (event) => {
@@ -90,7 +90,7 @@ function HasarSorguAtlat() {
 
             if (response.status === 200) {
                 setMessage(response.data);
-                setSelectedSira(''); // Clear selection after successful operation
+                setSelectedSira('');
             }
         } catch (error) {
             console.error('Hasar sorgulanırken bir hata oluştu:', error);
@@ -128,8 +128,11 @@ function HasarSorguAtlat() {
                     placeholder="Kredi Numarasını Girin"
                     disabled={loading}
                 />
+            </div>
+
+            <div className="button-section">
                 <button onClick={fetchSiralar} disabled={loading || !krediNumarasi.trim()}>
-                    Bilgileri Getir
+                    Sıra Seçme Ekranını Getir
                 </button>
             </div>
 
