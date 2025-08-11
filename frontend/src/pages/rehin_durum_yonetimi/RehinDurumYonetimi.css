@@ -1,29 +1,27 @@
 .rehin-durum-yonetimi-container {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
   margin-top: 50px;
-  background-color: #E7ECEF;
-  padding: 20px;
+  background-color: #e7ecef;
+  padding: 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   max-width: 850px;
   margin-left: auto;
   margin-right: auto;
   border: 1px solid #f5c6cb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #611a1a;
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
 }
 
 h1 {
-  color: #7A1A1A;
+  color: #7a1a1a;
   margin-bottom: 30px;
   font-size: 2.5em;
-}
-
-.input-group-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .input-section {
@@ -32,62 +30,58 @@ h1 {
   justify-content: center;
   align-items: center;
   gap: 15px;
+  width: 100%;
 }
 
 .input-section label {
-  margin-right: 10px;
   font-weight: bold;
-  color: #7A1A1A;
-  min-width: 120px;
-  text-align: left;
+  color: #7a1a1a;
+  font-size: 1.1em;
+  min-width: 150px;
+  text-align: right;
 }
 
 .input-section input[type="text"] {
   padding: 12px;
   border: 1px solid #e3bcbc;
   border-radius: 5px;
-  width: 300px;
+  width: 280px;
   font-size: 17px;
   box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.08);
   background-color: #fff8f8;
   color: #2c3e50;
 }
 
-.input-section .button-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-top: 20px;
+.button-section {
+  margin-top: 5px;
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-.input-section button,
+.button-section button,
 .update-section button {
   padding: 12px 25px;
-  margin: 0 5px;
   border: none;
   border-radius: 5px;
   color: white;
   font-weight: bold;
   cursor: pointer;
+  background-color: #e30a17;
   transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
-  font-size: 17px;
+  font-size: 1.1em;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
-.input-section button:hover:not(:disabled),
+.button-section button:hover:not(:disabled),
 .update-section button:hover:not(:disabled) {
+  background-color: #c20a14;
   transform: translateY(-2px);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
 }
 
-.input-section button {
-    background-color: #E30A17;
-}
-.input-section button:hover:not(:disabled) {
-    background-color: #C20A14;
-}
-
-.input-section button:disabled,
+.button-section button:disabled,
 .update-section button:disabled {
   background-color: #cccccc !important;
   cursor: not-allowed;
@@ -110,6 +104,7 @@ h1 {
   font-size: 1.15em;
   border: 1px solid;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  width: 100%;
 }
 
 .message.success {
@@ -126,7 +121,7 @@ h1 {
 
 .loading {
   margin-top: 20px;
-  color: #B20A13;
+  color: #b20a13;
   font-weight: bold;
   font-size: 1.1em;
 }
@@ -135,30 +130,34 @@ h1 {
   margin-top: 35px;
   border-top: 1px solid #f5c6cb;
   padding-top: 25px;
+  width: 100%;
 }
 
-.kredi-list-section h2, .kredi-list-section h3 {
-  color: #E30A17;
+.kredi-list-section h2,
+.kredi-list-section h3 {
+  color: #e30a17;
   margin-bottom: 20px;
 }
 
 .sira-select-container,
 .update-section {
-    margin-bottom: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
 }
 
 .sira-select-container select,
 .update-section select {
-    padding: 10px;
-    border: 1px solid #e3bcbc;
-    border-radius: 5px;
-    font-size: 16px;
-    background-color: #fff8f8;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 12px;
+  border: 1px solid #e3bcbc;
+  border-radius: 5px;
+  width: 280px;
+  font-size: 17px;
+  background-color: #fff8f8;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .kredi-item {
@@ -171,7 +170,7 @@ h1 {
   justify-content: space-between;
   align-items: center;
   font-size: 1.1em;
-  color: #611A1A;
+  color: #611a1a;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
@@ -180,20 +179,56 @@ h1 {
 }
 
 .all-kredi-items {
-    max-height: 350px;
-    overflow-y: auto;
-    padding: 15px;
-    border: 1px dashed #f5c6cb;
-    border-radius: 8px;
-    background-color: #fffafa;
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 15px;
+  border: 1px dashed #f5c6cb;
+  border-radius: 8px;
+  background-color: #fffafa;
 }
 
 .title-icon {
-    margin-right: 15px;
-    color: #7A1A1A;
-    font-size: 1.2em;
-    vertical-align: middle;
+  margin-right: 15px;
+  color: #7a1a1a;
+  font-size: 1.2em;
+  vertical-align: middle;
 }
+
 .rehin-durum-yonetimi-container.fade-in {
-    opacity: 1;
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .rehin-durum-yonetimi-container {
+    padding: 20px;
+    margin-top: 30px;
+  }
+
+  h1 {
+    font-size: 2em;
+    margin-bottom: 25px;
+  }
+
+  .input-section {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .input-section label {
+    min-width: unset;
+    text-align: center;
+  }
+
+  .input-section input[type="text"],
+  .sira-select-container select,
+  .update-section select {
+    width: 90%;
+  }
+
+  .button-section button,
+  .update-section button {
+    width: 90%;
+    padding: 10px 20px;
+  }
 }
