@@ -5,8 +5,9 @@ import RehinDurumYonetimi from "./pages/rehin_durum_yonetimi/RehinDurumYonetimi"
 import HasarSorguAtlat from "./pages/hasar_sorgu_atlat/HasarSorguAtlat"
 import EvrakDurumGuncelle from "./pages/evrak_durum_guncelle/EvrakDurumGuncelle"
 import GunKapama from "./pages/gun_kapama/GunKapama"
+import SmsBilgi from "./pages/sms_bilgi/SmsBilgi" // Yeni bileşen
 import "./App.css"
-import { FaHome, FaCarCrash, FaFileAlt, FaClipboardList, FaCalendarAlt } from "react-icons/fa"
+import { FaHome, FaCarCrash, FaFileAlt, FaClipboardList, FaCalendarAlt, FaEnvelope } from "react-icons/fa"
 
 function App() {
   return (
@@ -39,6 +40,11 @@ function App() {
                 <FaCalendarAlt size={20} /> Gün Kapama
               </Link>
             </li>
+            <li>
+              <Link to="/sms-bilgi">
+                <FaEnvelope size={20} /> SMS Bilgi
+              </Link>
+            </li>
           </ul>
         </nav>
         <div className="page-content">
@@ -48,6 +54,7 @@ function App() {
             <Route path="/hasar-sorgu-atlat" element={<HasarSorguAtlat />} />
             <Route path="/evrak-durum-guncelle" element={<EvrakDurumGuncelle />} />
             <Route path="/kapanan-gun" element={<GunKapama />} />
+            <Route path="/sms-bilgi" element={<SmsBilgi />} /> {/* Yeni rota */}
           </Routes>
         </div>
       </div>
