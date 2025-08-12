@@ -59,7 +59,8 @@ function EvrakDurumGuncelle() {
     setNewDocumentStatus("")
 
     try {
-      const response = await axios.get(`https://web-service1-8gnq.onrender.com/remote/kootoevrakdurum/${talepNumarasi}`)
+      // ✅ Corrected API URL and path to match backend controller
+      const response = await axios.get(`https://kf-proje1.onrender.com/api/kootoevrakdurum/kredi/${talepNumarasi}`)
 
       if (response.status === 200) {
         const filteredData = response.data
@@ -134,8 +135,9 @@ function EvrakDurumGuncelle() {
       if (selectedDocument.id === "all") {
         for (const doc of documentStatusList) {
           try {
+            // ✅ Corrected API URL and path to match backend controller
             await axios.put(
-              `https://web-service1-8gnq.onrender.com/remote/kootoevrakdurum/update/${talepNumarasi}/${doc.id}`,
+              `https://kf-proje1.onrender.com/api/kootoevrakdurum/update/${talepNumarasi}/${doc.id}`,
               {
                 durum: Number(newDocumentStatus),
               },
@@ -154,8 +156,9 @@ function EvrakDurumGuncelle() {
           setMessage(`Evrak durumu güncellenirken bazı hatalar oluştu. ${updatedCount} kayıt güncellendi.`)
         }
       } else {
+        // ✅ Corrected API URL and path to match backend controller
         const response = await axios.put(
-          `https://web-service1-8gnq.onrender.com/remote/kootoevrakdurum/update/${talepNumarasi}/${selectedDocument.id}`,
+          `https://kf-proje1.onrender.com/api/kootoevrakdurum/update/${talepNumarasi}/${selectedDocument.id}`,
           { durum: Number(newDocumentStatus) },
         )
         if (response.status === 200) {

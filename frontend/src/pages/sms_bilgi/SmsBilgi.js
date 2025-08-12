@@ -37,25 +37,23 @@ function SmsBilgi() {
       setMessage({ type: "error", text: "Lütfen bir telefon numarası giriniz." })
       return
     }
-    // Tarih zorunluluğu, API'deki `required = false` ile uyumlu hale getirildi.
-    // İsterseniz burada zorunlu hale getirebilirsiniz.
 
     setLoading(true)
     setMessage(null)
     setSmsList([]) // Yeni veri çekmeden önce listeyi temizle
 
     try {
-      // URL'yi dinamik olarak oluşturun, sadece dolu parametreleri ekleyin
-      let url = `https://web-service1-8gnq.onrender.com/remote/sms/records`
+      // ✅ Corrected API URL and path
+      let url = `https://kf-proje1.onrender.com/api/sms/records`
       const params = new URLSearchParams()
       if (phoneNumber.trim()) {
         params.append("phoneNumber", phoneNumber.trim())
       }
       if (startDate) {
-        params.append("startDate", startDate) // Sadece LocalDate gönderiliyor
+        params.append("startDate", startDate)
       }
       if (endDate) {
-        params.append("endDate", endDate) // Sadece LocalDate gönderiliyor
+        params.append("endDate", endDate)
       }
 
       const fullUrl = `${url}?${params.toString()}`

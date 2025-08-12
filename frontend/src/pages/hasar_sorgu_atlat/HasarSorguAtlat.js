@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaCarCrash } from 'react-icons/fa';
@@ -42,8 +44,9 @@ function HasarSorguAtlat() {
         setSelectedSira('');
 
         try {
+            // ✅ Corrected API URL and path
             const response = await axios.get(
-                `https://web-service1-8gnq.onrender.com/remote/urunler/siralar/${krediNumarasi}`
+                `https://kf-proje1.onrender.com/api/urunler/siralar/${krediNumarasi}`
             );
             if (response.status === 200 && response.data.length > 0) {
                 setAvailableSiralar(response.data);
@@ -79,7 +82,8 @@ function HasarSorguAtlat() {
         setLoading(true);
         setMessage('');
 
-        let url = `https://web-service1-8gnq.onrender.com/remote/urunler/delete-and-reinsert-state-info-by-kredi?krediNumarasi=${krediNumarasi}`;
+        // ✅ Corrected API URL and path
+        let url = `https://kf-proje1.onrender.com/api/urunler/delete-and-reinsert-state-info-by-kredi?krediNumarasi=${krediNumarasi}`;
 
         if (selectedSira !== '' && selectedSira !== 'all') {
             url += `&sira=${selectedSira}`;

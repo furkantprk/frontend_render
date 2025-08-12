@@ -68,7 +68,8 @@ function RehinDurumYonetimi() {
     setNewRehinDurum("")
 
     try {
-      const response = await axios.get(`https://web-service1-8gnq.onrender.com/remote/urunler/kredi/${krediNumarasi}`)
+      // ✅ Corrected API URL and path
+      const response = await axios.get(`https://kf-proje1.onrender.com/api/urunler/kredi/${krediNumarasi}`)
       if (response.status === 200) {
         const filteredData = response.data
         if (filteredData.length > 0) {
@@ -139,7 +140,8 @@ function RehinDurumYonetimi() {
       if (selectedSira === "all") {
         for (const kredi of krediBilgileri) {
           try {
-            await axios.put(`https://web-service1-8gnq.onrender.com/remote/urunler/${krediNumarasi}/${kredi.sira}`, {
+            // ✅ Corrected API URL and path for batch update
+            await axios.put(`https://kf-proje1.onrender.com/api/urunler/${krediNumarasi}/${kredi.sira}`, {
               rehinDurum: Number(newRehinDurum),
             })
             updatedCount++
@@ -156,8 +158,9 @@ function RehinDurumYonetimi() {
           setMessage(`Rehin durumu güncellenirken bazı hatalar oluştu. ${updatedCount} kayıt güncellendi.`)
         }
       } else {
+        // ✅ Corrected API URL and path for single update
         const response = await axios.put(
-          `https://web-service1-8gnq.onrender.com/remote/urunler/${krediNumarasi}/${selectedSira}`,
+          `https://kf-proje1.onrender.com/api/urunler/${krediNumarasi}/${selectedSira}`,
           { rehinDurum: Number(newRehinDurum) },
         )
         if (response.status === 200) {

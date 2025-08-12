@@ -40,11 +40,12 @@ function GunKapama() {
     setLoading(true);
     setMessage("");
 
-    const baseUrl = "https://web-service1-8gnq.onrender.com";
+    // ✅ Corrected API URL and path
+    const baseUrl = "https://kf-proje1.onrender.com";
 
     try {
       const response = await axios.delete(
-        `${baseUrl}/remote/kogunkapama/process/${selectedDate}`
+        `${baseUrl}/api/kogunkapama/process/${selectedDate}`
       );
 
       if (response.status === 200) {
