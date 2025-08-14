@@ -7,6 +7,7 @@ import "./SmsBilgi.css"
 
 function SmsBilgi() {
   const [phoneNumber, setPhoneNumber] = useState("")
+  const [smsKod, setSmsKod] = useState("")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
   const [smsList, setSmsList] = useState([])
@@ -32,22 +33,67 @@ function SmsBilgi() {
     }
   }
 
+  // Yeni fonksiyon: Telefon numarasının kurallara göre güncellenmesini yönetir
+  const handlePhoneNumberChange = (e) => {
+    const value = e.target.value
+
+    // Sadece '+' ve rakamları kabul et
+    if (!/^[0-9+]*$/.test(value)) {
+      return // İzin verilmeyen bir karakterse işlemi durdur
+    }
+
+    // Telefon numarasını kurala göre kontrol et
+    if (value.startsWith("+")) {
+      if (value.length <= 13) {
+        setPhoneNumber(value)
+      }
+    } else if (value.startsWith("0")) {
+      if (value.length <= 11) {
+        setPhoneNumber(value)
+      }
+    } else {
+      if (value.length <= 10) {
+        setPhoneNumber(value)
+      }
+    }
+    setMessage(null)
+  }
+
+  // Bu fonksiyon sadece SMS Kodu için maksimum hane kısıtlamasını yönetir
+  const handleSmsKodChange = (e) => {
+    const value = e.target.value
+    if (value.length <= 4) {
+      setSmsKod(value)
+    }
+    setMessage(null)
+  }
+
+  const cleanNumber = (number) => {
+    return number.replace(/[^0-9]/g, "")
+  }
+
   const fetchSmsMessages = async () => {
-    if (!phoneNumber.trim()) {
-      setMessage({ type: "error", text: "Lütfen bir telefon numarası giriniz." })
+    const hasSearchCriteria = phoneNumber.trim() || smsKod.trim() || startDate || endDate
+    if (!hasSearchCriteria) {
+      setMessage({ type: "error", text: "Lütfen en az bir arama kriteri giriniz." })
       return
     }
 
     setLoading(true)
     setMessage(null)
-    setSmsList([]) // Yeni veri çekmeden önce listeyi temizle
+    setSmsList([])
 
     try {
-      // ✅ Corrected API URL and path
       let url = `https://kf-proje1.onrender.com/api/sms/records`
       const params = new URLSearchParams()
-      if (phoneNumber.trim()) {
-        params.append("phoneNumber", phoneNumber.trim())
+
+      const cleanedPhone = cleanNumber(phoneNumber)
+      if (cleanedPhone) {
+        params.append("phoneNumber", cleanedPhone)
+      }
+
+      if (smsKod.trim()) {
+        params.append("smsKod", smsKod.trim())
       }
       if (startDate) {
         params.append("startDate", startDate)
@@ -84,6 +130,8 @@ function SmsBilgi() {
     }
   }
 
+  const isButtonEnabled = phoneNumber.trim() || smsKod.trim() || startDate || endDate
+
   return (
     <div className={`sms-bilgi-container ${isPageLoaded ? "fade-in" : ""}`}>
       <h1>
@@ -97,11 +145,20 @@ function SmsBilgi() {
             type="text"
             id="phoneNumberInput"
             value={phoneNumber}
-            onChange={(e) => {
-              setPhoneNumber(e.target.value)
-              setMessage(null)
-            }}
+            onChange={handlePhoneNumberChange}
             placeholder="Telefon Numarasını Girin"
+            disabled={loading}
+          />
+        </div>
+
+        <div className="input-section">
+          <label htmlFor="smsKodInput">SMS Kodu:</label>
+          <input
+            type="text"
+            id="smsKodInput"
+            value={smsKod}
+            onChange={handleSmsKodChange}
+            placeholder="SMS Kodunu Girin"
             disabled={loading}
           />
         </div>
@@ -135,7 +192,7 @@ function SmsBilgi() {
         </div>
 
         <div className="button-section">
-          <button onClick={fetchSmsMessages} disabled={loading || !phoneNumber.trim()}>
+          <button onClick={fetchSmsMessages} disabled={loading || !isButtonEnabled}>
             Listele
           </button>
         </div>
