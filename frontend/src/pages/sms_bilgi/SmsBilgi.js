@@ -1,8 +1,8 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import axios from "axios"
-import { FaEnvelopeOpenText } from "react-icons/fa"
+import { FaEnvelopeOpenText, FaSort } from "react-icons/fa"
 import "./SmsBilgi.css"
 
 function SmsBilgi() {
@@ -14,11 +14,31 @@ function SmsBilgi() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState(null)
   const [isPageLoaded, setIsPageLoaded] = useState(false)
+  const [isDateSortReversed, setIsDateSortReversed] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(15)
+
+  const tableWrapperRef = useRef(null)
 
   useEffect(() => {
     const timer = setTimeout(() => setIsPageLoaded(true), 100)
     return () => clearTimeout(timer)
   }, [])
+
+  const toggleDateSort = () => {
+    const sortedList = [...smsList].sort((a, b) => {
+      const dateA = new Date(a.insertDate)
+      const dateB = new Date(b.insertDate)
+
+      if (isDateSortReversed) {
+        return dateA.getTime() - dateB.getTime() // Eskiden yeniye sırala
+      } else {
+        return dateB.getTime() - dateA.getTime() // Yeniden eskiye sırala
+      }
+    })
+    setSmsList(sortedList)
+    setIsDateSortReversed(!isDateSortReversed)
+  }
 
   const getRowClass = (kaynakTablo) => {
     switch (kaynakTablo) {
@@ -33,16 +53,11 @@ function SmsBilgi() {
     }
   }
 
-  // Yeni fonksiyon: Telefon numarasının kurallara göre güncellenmesini yönetir
   const handlePhoneNumberChange = (e) => {
     const value = e.target.value
-
-    // Sadece '+' ve rakamları kabul et
     if (!/^[0-9+]*$/.test(value)) {
-      return // İzin verilmeyen bir karakterse işlemi durdur
+      return
     }
-
-    // Telefon numarasını kurala göre kontrol et
     if (value.startsWith("+")) {
       if (value.length <= 13) {
         setPhoneNumber(value)
@@ -59,7 +74,6 @@ function SmsBilgi() {
     setMessage(null)
   }
 
-  // Bu fonksiyon sadece SMS Kodu için maksimum hane kısıtlamasını yönetir
   const handleSmsKodChange = (e) => {
     const value = e.target.value
     if (value.length <= 4) {
@@ -82,9 +96,10 @@ function SmsBilgi() {
     setLoading(true)
     setMessage(null)
     setSmsList([])
+    setCurrentPage(1)
 
     try {
-      let url = `https://kf-proje1.onrender.com/api/sms/records`
+      const url = `https://kf-proje1.onrender.com/api/sms/records`
       const params = new URLSearchParams()
 
       const cleanedPhone = cleanNumber(phoneNumber)
@@ -95,11 +110,12 @@ function SmsBilgi() {
       if (smsKod.trim()) {
         params.append("smsKod", smsKod.trim())
       }
+
       if (startDate) {
-        params.append("startDate", startDate)
+        params.append("startDate", `${startDate}T00:00:00Z`) // UTC başlangıç saati
       }
       if (endDate) {
-        params.append("endDate", endDate)
+        params.append("endDate", `${endDate}T23:59:59Z`) // UTC bitiş saati
       }
 
       const fullUrl = `${url}?${params.toString()}`
@@ -130,7 +146,58 @@ function SmsBilgi() {
     }
   }
 
+  const scrollToTableTop = () => {
+    if (tableWrapperRef.current) {
+      tableWrapperRef.current.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+    }
+  }
+
   const isButtonEnabled = phoneNumber.trim() || smsKod.trim() || startDate || endDate
+
+  const totalPages = Math.ceil(smsList.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentItems = smsList.slice(startIndex, endIndex)
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page)
+    setTimeout(scrollToTableTop, 50)
+  }
+
+  const handleItemsPerPageChange = (e) => {
+    setItemsPerPage(Number(e.target.value))
+    setCurrentPage(1)
+    setTimeout(scrollToTableTop, 50)
+  }
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1)
+      setTimeout(scrollToTableTop, 50)
+    }
+  }
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1)
+      setTimeout(scrollToTableTop, 50)
+    }
+  }
+
+  const formatDateToUTC = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const year = date.getUTCFullYear();
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+    const day = date.getUTCDate().toString().padStart(2, '0');
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+    return `${day}.${month}.${year} - ${hours}:${minutes}:${seconds}`;
+  };
 
   return (
     <div className={`sms-bilgi-container ${isPageLoaded ? "fade-in" : ""}`}>
@@ -198,30 +265,58 @@ function SmsBilgi() {
         </div>
       </div>
 
-      {message && (
-        <p className={`message ${message.type}-message`}>{message.text}</p>
-      )}
+      {message && <p className={`message ${message.type}-message`}>{message.text}</p>}
       {loading && <p className="loading-message">Veriler yükleniyor...</p>}
 
       {!loading && smsList.length > 0 && (
-        <div className="sms-table-wrapper">
+        <div className="sms-table-wrapper" ref={tableWrapperRef}>
+          <div className="pagination-controls-top">
+            <div className="items-per-page">
+              <label htmlFor="itemsPerPage">Sayfa başına kayıt: </label>
+              <select
+                id="itemsPerPage"
+                value={itemsPerPage}
+                onChange={handleItemsPerPageChange}
+                className="items-per-page-select"
+              >
+                <option value={15}>15</option>
+                <option value={30}>30</option>
+                <option value={45}>45</option>
+              </select>
+            </div>
+            <div className="pagination-info">
+              Toplam {smsList.length} kayıt - Sayfa {currentPage} / {totalPages}
+            </div>
+          </div>
+
           <table className="sms-table">
             <thead>
               <tr>
                 <th>Telefon Numarası</th>
                 <th>Mesaj İçeriği</th>
-                <th>Ekleme Tarihi</th>
+                <th>
+                  <div className="date-header-with-sort">
+                    Ekleme Tarihi
+                    <button
+                      className="sort-button"
+                      onClick={toggleDateSort}
+                      title={isDateSortReversed ? "Eskiden Yeniye Sırala" : "Yeniden Eskiye Sırala"}
+                    >
+                      <FaSort />
+                    </button>
+                  </div>
+                </th>
                 <th>SMS Kodu</th>
                 <th>Gönderilen Program</th>
                 <th>Kaynak Tablo</th>
               </tr>
             </thead>
             <tbody>
-              {smsList.map((sms, index) => (
-                <tr key={index} className={getRowClass(sms.kaynakTablo)}>
+              {currentItems.map((sms, index) => (
+                <tr key={startIndex + index} className={getRowClass(sms.kaynakTablo)}>
                   <td>{sms.phoneNumber}</td>
                   <td className="message-body-cell">{sms.messageBody}</td>
-                  <td>{new Date(sms.insertDate).toLocaleDateString("tr-TR")}</td>
+                  <td>{formatDateToUTC(sms.insertDate)}</td>
                   <td>{sms.smsKod}</td>
                   <td>{sms.gonderilenProg}</td>
                   <td>{sms.kaynakTablo}</td>
@@ -229,6 +324,30 @@ function SmsBilgi() {
               ))}
             </tbody>
           </table>
+
+          {totalPages > 1 && (
+            <div className="pagination-controls">
+              <button className="pagination-btn" onClick={handlePrevPage} disabled={currentPage === 1}>
+                ← Önceki
+              </button>
+
+              <div className="pagination-numbers">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    className={`pagination-number ${currentPage === page ? "active" : ""}`}
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+
+              <button className="pagination-btn" onClick={handleNextPage} disabled={currentPage === totalPages}>
+                Sonraki →
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
